@@ -1,0 +1,64 @@
+class BSTIterator {
+public:
+    stack<TreeNode*> s;
+    bool dir; 
+
+    BSTIterator(TreeNode* root, bool dir) {
+        this -> dir = dir;
+        TreeNode* temp = root;
+        while (temp != NULL) {
+            s.push(temp);
+            if(dir == true) temp = temp->left;
+            else temp = temp -> right;
+        }
+    }
+
+    int next() {
+        TreeNode* value = s.top();
+        s.pop();
+
+        if(dir == true)
+        {
+            if (value->right != NULL) {
+                TreeNode* temp = value->right;
+                while (temp != NULL) {
+                    s.push(temp);
+                    temp = temp->left;
+                }
+            }
+        }
+        else
+        {
+            if(value->left != NULL) {
+                TreeNode* temp = value->left;
+                while(temp != NULL) {
+                    s.push(temp);
+                    temp = temp -> right;
+                }
+            }
+        }
+
+        return value->val;
+    }
+};
+
+class Solution {
+public:
+    bool findTarget(TreeNode* root, int k) {
+        BSTIterator l(root,true);
+        BSTIterator r(root,false);
+
+        int left = l.next();
+        int right = r.next();
+
+        while(left < right)
+        {
+            int sum = left + right;
+            if(sum == k) return true;
+            else if(sum < k) left = l.next();
+            else right = r.next();
+        }
+
+        return false;
+    }
+};
